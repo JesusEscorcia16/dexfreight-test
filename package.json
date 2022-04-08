@@ -1,0 +1,27 @@
+{
+  "name": "dexfreight-test",
+  "version": "1.0.0",
+  "description": "Test for dexFreight company",
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JesusEscorcia16/dexfreight-test.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JesusEscorcia16/dexfreight-test/issues"
+  },
+  "homepage": "https://github.com/JesusEscorcia16/dexfreight-test#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "pg": "^8.7.3",
+    "validatorjs": "^3.22.1"
+  }
+}
