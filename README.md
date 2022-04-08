@@ -30,4 +30,5 @@ Se hace uso de PostgreSQL como motor de bases de datos. Se implementan procedimi
  
 		npm start
 		
+- Incluye archivo exportado de postman para que se importe y sea mas fácil la validación de los endpoints
 - A divertirse! :)
