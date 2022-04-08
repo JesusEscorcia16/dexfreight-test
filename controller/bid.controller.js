@@ -22,7 +22,7 @@ const save = async (req, res) => {
             this.err = 'The load doesn\'t exists.';
         }
     } else {
-        this.err = 'One or more params are empty.';
+        this.err = 'One or more parameters are empty.';
     }
     res.status(500).send({ err: this.err });
 }
