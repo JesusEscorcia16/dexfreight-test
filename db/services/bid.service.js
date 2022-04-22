@@ -1,12 +1,8 @@
-const { Client } = require('pg');
-
+const client = require('../conexion');
 
 class BidService {
 
     constructor() {
-        this.client = new Client();
-        this.client.connect();
-
         this.load = null;
 
         this.res = null;
@@ -14,11 +10,7 @@ class BidService {
 
     save = async ({ loadId, userName, value }) => {
         try {
-            const query = {
-                text: 'INSERT INTO BIDS (LOADID, USER_NAME, VALUE) VALUES($1, $2, $3);',
-                values: [loadId, userName, value]
-            }
-            await this.client.query(query);
+            await client.query('INSERT INTO BIDS (LOADID, USER_NAME, VALUE) VALUES($1, $2, $3);', [loadId, userName, value]);
             return true;
         } catch (err) {
             throw err;
@@ -26,12 +18,8 @@ class BidService {
     }
 
     accept = async (bidId) => {
-        const query = {
-            text: "UPDATE BIDS SET STATUS = 'Accepted', UPDATED_AT = NOW() WHERE ID = $1;",
-            values: [bidId]
-        }
         try {
-            await this.client.query(query);
+            await client.query( "UPDATE BIDS SET STATUS = 'Accepted', UPDATED_AT = NOW() WHERE ID = $1;", [bidId]);
             return true;
         } catch (err) {
             throw err;
@@ -39,12 +27,8 @@ class BidService {
     }
 
     decline = async (bidId) => {
-        const query = {
-            text: "UPDATE BIDS SET STATUS = 'Declined', UPDATED_AT = NOW() WHERE ID = $1;",
-            values: [bidId]
-        }
         try {
-            await this.client.query(query);
+            await client.query("UPDATE BIDS SET STATUS = 'Declined', UPDATED_AT = NOW() WHERE ID = $1;", [bidId]);
             return true
         } catch (err) {
             throw err;
@@ -52,12 +36,8 @@ class BidService {
     }
 
     getBidById = async (bidId) => {
-        const query = {
-            text: 'SELECT * FROM BIDS WHERE ID = $1;',
-            values: [bidId]
-        }
         try {            
-            this.res = await this.client.query(query);            
+            this.res = await client.query('SELECT * FROM BIDS WHERE ID = $1;', [bidId]);            
             return this.res?.rows[0];
         } catch (err) {
             throw err;

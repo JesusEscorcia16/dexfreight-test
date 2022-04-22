@@ -1,18 +1,15 @@
-const { Client } = require('pg');
+const client = require('../conexion');
 
 class LoadService {
 
     constructor() {
-        this.client = new Client();
-        this.client.connect();
-
         this.res = null;
     }
 
     save = async (load) => {
-        const query = {
-            text: 'INSERT INTO LOADS(ADDRESS_A, LAT_A, LNG_A, ADDRESS_B, LAT_B, LNG_B, USER_NAME, EMAIL, RATE, INSTRUCTIONS) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);',
-            values: [
+        try {
+            this.res = await client.query('INSERT INTO LOADS(ADDRESS_A, LAT_A, LNG_A, ADDRESS_B, LAT_B, LNG_B, USER_NAME, EMAIL, RATE, INSTRUCTIONS) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);',
+            [
                 load?.pointA?.addressA,
                 load?.pointA?.lat,
                 load?.pointA?.lng,
@@ -23,10 +20,7 @@ class LoadService {
                 load?.email,
                 load?.rate,
                 load?.instructions
-            ]
-        }
-        try {
-            await this.client.query(query);
+            ]);
             return true;
         } catch (err) {
             throw err;
@@ -34,9 +28,9 @@ class LoadService {
     }
 
     update = async (load, loadId) => {
-        const query = {
-            text: 'UPDATE LOADS SET ADDRESS_A = $1, LAT_A = $2, LNG_A = $3, ADDRESS_B = $4, LAT_B = $5, LNG_B = $6, USER_NAME = $7, EMAIL = $8, RATE = $9, INSTRUCTIONS = $10, UPDATED_AT = NOW() WHERE ID = $11;',
-            values: [
+        try {
+            this.res = await client.query('UPDATE LOADS SET ADDRESS_A = $1, LAT_A = $2, LNG_A = $3, ADDRESS_B = $4, LAT_B = $5, LNG_B = $6, USER_NAME = $7, EMAIL = $8, RATE = $9, INSTRUCTIONS = $10, UPDATED_AT = NOW() WHERE ID = $11;',
+            [
                 load?.pointA?.addressA,
                 load?.pointA?.lat,
                 load?.pointA?.lng,
@@ -48,10 +42,7 @@ class LoadService {
                 load?.rate,
                 load?.instructions,
                 loadId
-            ]
-        }
-        try {
-            await this.client.query(query);
+            ]);
             return true;
         } catch (err) {
             throw err;
@@ -60,7 +51,7 @@ class LoadService {
 
     getLoads = async () => {
         try {
-            this.res = await this.client.query("SELECT * FROM LOADS");
+            this.res = await client.query("SELECT * FROM LOADS");
             return this.res?.rows;
         } catch (err) {
             throw err;
@@ -68,12 +59,8 @@ class LoadService {
     }
 
     getFilteredLoads = async ({ userName = '' }) => {
-        const query = {
-            text: 'SELECT * FROM LOADS WHERE USER_NAME ILIKE $1;',
-            values: [`%${userName}%`]
-        }
         try {
-            this.res = await this.client.query(query);
+            this.res = await client.query('SELECT * FROM LOADS WHERE USER_NAME ILIKE $1;', [`%${userName}%`]);
             return this.res?.rows;
         } catch (err) {
             throw err;
@@ -81,12 +68,8 @@ class LoadService {
     }
 
     getLoadById = async (loadId = 0) => {
-        const query = {
-            text: 'SELECT * FROM LOADS WHERE ID = $1;',
-            values: [loadId]
-        };
         try {
-            this.res = await this.client.query(query);
+            this.res = await client.query('SELECT * FROM LOADS WHERE ID = $1;', [loadId]);
             return this.res?.rows[0];
         } catch (err) {
             throw err;
@@ -94,12 +77,8 @@ class LoadService {
     }
 
     getLoadByBidId = async (bidId) => {
-        const query = {
-            text: 'SELECT LO.* FROM LOADS LO JOIN BIDS BID ON BID.LOADID = LO.ID WHERE BID.ID = $1',
-            values: [bidId]
-        }
         try {
-            this.res = await this.client.query(query);
+            this.res = await client.query('SELECT LO.* FROM LOADS LO JOIN BIDS BID ON BID.LOADID = LO.ID WHERE BID.ID = $1', [bidId]);
             return this.res?.rows[0];
         } catch (err) {
             throw err;
